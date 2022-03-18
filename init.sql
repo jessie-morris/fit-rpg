@@ -30,6 +30,9 @@ CREATE TABLE IF NOT EXISTS player_activities (
     activityId VARCHAR(50) NOT NULL
 );
 
+INSERT INTO players (username, level, created_on)
+VALUES ('ghost', 5, CURRENT_TIMESTAMP),
+('ya_boi_colin', 6, CURRENT_TIMESTAMP)
 
 
 -- -- Changes the owner of the table to postgres which is the default when installing postgres
