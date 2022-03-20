@@ -1,19 +1,11 @@
 require('dotenv').config({path: __dirname + '/.env'})
+const db = require('./db')
+const responseHelper = require('./response_helper')
 const axios = require('axios')
-const { Pool} = require('pg')
 
 const url = "https://141f-65-60-175-56.ngrok.io";
 
-const pool = new Pool({
-  user: 'fitadmin',
-  database: 'fit_rpg',
-  password: 'fitadmin',
-  port: 5432,
-  host: 'localhost',
-})
-
-
-const express = require("express")
+const express = require("express");
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
@@ -27,102 +19,16 @@ app.listen(PORT, () => {
 })
 
 app.post('/rpg', (req, res) => {
-    res.type("application/json")
-    const response = {
-        "response_type": "in_channel",
-        "blocks": [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "You've landed on a desolate planet, the only way to survive is to generate heat through exercise. \n  Please choose a character:"
-                }
-            },
-            {
-                "type": "divider"
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "Avatar 1"
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": `${url}/avatar1.png`,
-                    "alt_text": "Anderson"
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "Avatar 2"
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": `${url}/avatar2.png`,
-                    "alt_text": "Sindel"
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "Avatar 3"
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": `${url}/avatar3.png`,
-                    "alt_text": "alt text for image"
-                }
-            },
-            {
-                "type": "divider"
-            },
-            {
-                "type": "actions",
-                "elements": [
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Avatar 1",
-                            "emoji": true
-                        },
-                        "action_id": "avatar1_selected",
-                        "value": "avatar1"
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Avatar 2",
-                            "emoji": true
-                        },
-                        "action_id": "avatar2_selected",
-                        "value": "avatar2"
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Avatar 3",
-                            "emoji": true
-                        },
-                        "action_id": "avatar3_selected",
-                        "value": "avatar3",
-                    }
-                ]
-            }
-        ]
+    const command = req.body.text;
+    if(command == "list") {
+        return db.getPlayers(req, res)
     }
+    res.type("application/json")
+    const response = responseHelper.signupResponse
     res.send(response)
 })
 
-function get_users() {
-
-}
+// app.post('/rpg', db.getPlayers)
 
 async function insertData() {
     const [name, color] = process.argv.slice(2);
