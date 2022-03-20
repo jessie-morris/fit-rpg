@@ -15,8 +15,8 @@ GRANT ALL PRIVILEGES ON DATABASE fit_rpg TO fitadmin;
 CREATE TABLE IF NOT EXISTS players (
 	username VARCHAR ( 50 ) PRIMARY KEY,
 	level int UNIQUE NOT NULL,
-	created_on TIMESTAMP NOT NULL,
-    last_activity TIMESTAMP 
+	created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_activity TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS activities (
@@ -26,13 +26,13 @@ CREATE TABLE IF NOT EXISTS activities (
 
 CREATE TABLE IF NOT EXISTS player_activities (
 	username VARCHAR ( 50 ) NOT NULL,
-	activity_date TIMESTAMP NOT NULL,
+	activity_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     activityId VARCHAR(50) NOT NULL
 );
 
-INSERT INTO players (username, level, created_on)
-VALUES ('ghost', 5, CURRENT_TIMESTAMP),
-('ya_boi_colin', 6, CURRENT_TIMESTAMP)
+-- INSERT INTO players (username, level)
+-- VALUES ('ghost', 5),
+-- ('ya_boi_colin', 6)
 
 
 -- -- Changes the owner of the table to postgres which is the default when installing postgres

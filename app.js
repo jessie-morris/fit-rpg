@@ -1,7 +1,8 @@
 require('dotenv').config({path: __dirname + '/.env'})
+const axios = require('axios')
+
 const db = require('./db')
 const responseHelper = require('./response_helper')
-const axios = require('axios')
 
 const express = require("express");
 const app = express()
@@ -21,6 +22,9 @@ app.post('/rpg', (req, res) => {
     if(command == "list") {
         return db.getPlayers(req, res)
     }
+    else if(command == "signup") {
+        return db.signup(req, res)
+    }
     res.type("application/json")
     const response = responseHelper.signupResponse
     res.send(response)
@@ -36,7 +40,6 @@ app.post('/slack/events', (req, res) => {
 app.post('/menu', (req, res) => {
     const payload = JSON.parse(req.body.payload)
     const selected_char = payload.actions[0].value
-    console.log(payload.actions[0].value)
     message = {
             "response_type": "in_channel",
             "text": `${selected_char} sucks`
@@ -49,5 +52,6 @@ app.post('/menu', (req, res) => {
         .catch(error => {
             console.error(error)
         })
-    res.send(200)
+
+    res.sendStatus(200)
 })
