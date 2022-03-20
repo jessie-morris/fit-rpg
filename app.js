@@ -3,8 +3,6 @@ const db = require('./db')
 const responseHelper = require('./response_helper')
 const axios = require('axios')
 
-const url = "https://141f-65-60-175-56.ngrok.io";
-
 const express = require("express");
 const app = express()
 app.use(express.json())
@@ -27,17 +25,6 @@ app.post('/rpg', (req, res) => {
     const response = responseHelper.signupResponse
     res.send(response)
 })
-
-// app.post('/rpg', db.getPlayers)
-
-async function insertData() {
-    const [name, color] = process.argv.slice(2);
-    const res = await pool.query(
-        "INSERT INTO players (name, color) VALUES ($1, $2)",
-        [name, color]
-      );
-    console.log(`Added a shark with the name ${name}`);
-}
 
 // used to validate slacks stupid ass api thing
 app.post('/slack/events', (req, res) => {
