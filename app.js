@@ -23,11 +23,22 @@ app.post('/rpg', (req, res) => {
         return db.getPlayers(req, res)
     }
     else if(command == "signup") {
-        return db.signup(req, res)
+        db.userExists(req.body.user_name).then(userExists => {
+            if(userExists.rows[0].count == '0') {
+                res.type("application/json")
+                const response = responseHelper.signupResponse
+                res.send(response)
+            }
+            else {
+                message = {
+                    "response_type": "in_channel",
+                    "text": "You already have a character"
+                }
+                res.send(message)
+            }
+        });
     }
-    res.type("application/json")
-    const response = responseHelper.signupResponse
-    res.send(response)
+
 })
 
 // used to validate slacks stupid ass api thing
@@ -38,20 +49,23 @@ app.post('/slack/events', (req, res) => {
 })
 
 app.post('/menu', (req, res) => {
-    const payload = JSON.parse(req.body.payload)
+    const payload = JSON.parse(req.body.payload);
+    // console.log(payload)
+    username = payload.user.username;
     const selected_char = payload.actions[0].value
-    message = {
+    db.signup(username).then(userCreated => {
+        message = {
             "response_type": "in_channel",
             "text": `${selected_char} sucks`
         }
-    axios.post(payload.response_url, message)
-        .then(res => {
-            console.log(`statusCode: ${res.status}`)
-            console.log(res)
-        })
-        .catch(error => {
-            console.error(error)
-        })
-
+        axios.post(payload.response_url, message)
+            .then(res => {
+                console.log(`statusCode: ${res.status}`)
+                // console.log(res)
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    })
     res.sendStatus(200)
 })

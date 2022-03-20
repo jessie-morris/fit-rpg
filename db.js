@@ -8,7 +8,9 @@ const pool = new Pool({
     password: 'fitadmin',
     port: 5432,
     host: 'localhost',
-})
+    idleTimeoutMillis: 0,
+    connectionTimeoutMillis: 0
+});
 
 const getPlayers = (req, res) => {
     pool.query('SELECT * FROM players ORDER BY level DESC', (error, results) => {
@@ -25,40 +27,30 @@ const getPlayers = (req, res) => {
     });
 }
 
-const signup = (req, res) => {
-    console.log(req.body)
-    userExists(req.body.user_name).then(foundUsers => {
-        console.log(foundUsers)
+const signup = async (username) => {
+    userExists(username).then(foundUsers => {
         if(foundUsers.rows[0].count == '0') {
-            pool.query('INSERT INTO players(username, level) VALUES($1, $2)', [req.body.user_name, 1], (error, results) => {
+            pool.query('INSERT INTO players(username, level) VALUES($1, $2)', [username, 1], (error, results) => {
                 if (error) {
                     throw error
                 }
-                var response = {
-                    "response_type": "in_channel",
-                    "text": "You signed up!"
-                };
-                res.status(200).json(response)
+                return true;
             });
         }
-        else
-        {
-            var response = {
-                "response_type": "in_channel",
-                "text": "You're already signed up"
-            };
-            res.status(200).json(response) 
+        else {
+            return false;
         }
     }).catch(err => console.error('Error executing query', err.stack))
 }
 
 const userExists = (username) => {
-    return pool.query("SELECT COUNT(*) from players where username = $1", [username])
+    console.log(username)
+    return pool.query("SELECT COUNT(*) from players where username = $1", [username]);
 }
 
 // const getUserByUsername = (request, response) => {
 //     const username = request.params.username
-  
+
 //     pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
 //       if (error) {
 //         throw error
@@ -69,5 +61,6 @@ const userExists = (username) => {
 
 module.exports = {
     getPlayers,
-    signup
+    signup,
+    userExists
 }
