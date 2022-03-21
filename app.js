@@ -8,13 +8,10 @@ const express = require("express");
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-
-const PORT = process.env.PORT || 3000
-
 app.use(express.static('public'))
 
-app.listen(PORT, () => {
-    console.log(`App listening at http://localhost:${PORT}`)
+app.get('/rpg', (req, res) => {
+    res.sendStatus(200)
 })
 
 app.post('/rpg', (req, res) => {
@@ -23,6 +20,7 @@ app.post('/rpg', (req, res) => {
         return db.getPlayers(req, res)
     }
     else if(command == "signup") {
+        console.log("got here")
         db.userExists(req.body.user_name).then(userExists => {
             if(userExists.rows[0].count == '0') {
                 res.type("application/json")
@@ -61,6 +59,4 @@ app.post('/menu', (req, res) => {
     res.sendStatus(200)
 })
 
-module.exports = {
-    app
-}
+module.exports = app
