@@ -23,6 +23,7 @@ const getPlayers = (req, res) => {
             "text": "The humble explorers",
             "attachments": pretty_print
         };
+        console.log(response)
         res.status(200).json(response)
     });
 }
