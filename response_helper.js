@@ -1,5 +1,12 @@
 const url = "https://141f-65-60-175-56.ngrok.io";
 
+const simpleChannelMessage = (text) => {
+    return {
+        "response_type": "in_channel",
+        "text": text
+    }
+}
+
 const signupResponse = {
     "response_type": "in_channel",
     "blocks": [
@@ -91,5 +98,6 @@ const signupResponse = {
 }
 
 module.exports = {
-    signupResponse 
+    simpleChannelMessage,
+    signupResponse
 }

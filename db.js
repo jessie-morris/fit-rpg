@@ -27,10 +27,10 @@ const getPlayers = (req, res) => {
     });
 }
 
-const signup = async (username) => {
+const signup = async (username, selected_char) => {
     userExists(username).then(foundUsers => {
         if(foundUsers.rows[0].count == '0') {
-            pool.query('INSERT INTO players(username, level) VALUES($1, $2)', [username, 1], (error, results) => {
+            pool.query('INSERT INTO players(username, level, characterId) VALUES($1, $2, $3)', [username, 1, selected_char], (error, results) => {
                 if (error) {
                     throw error
                 }

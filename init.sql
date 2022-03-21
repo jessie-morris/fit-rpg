@@ -15,8 +15,16 @@ GRANT ALL PRIVILEGES ON DATABASE fit_rpg TO fitadmin;
 CREATE TABLE IF NOT EXISTS players (
 	username VARCHAR ( 50 ) PRIMARY KEY,
 	level int UNIQUE NOT NULL,
+    characterId VARCHAR (50) NOT NULL,
+    warmth FLOAT DEFAULT 10,
 	created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_activity TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS characters (
+    characterId VARCHAR (50),
+    image VARCHAR (50),
+    warmthCoeff FLOAT
 );
 
 CREATE TABLE IF NOT EXISTS activities (
@@ -26,9 +34,14 @@ CREATE TABLE IF NOT EXISTS activities (
 
 CREATE TABLE IF NOT EXISTS player_activities (
 	username VARCHAR ( 50 ) NOT NULL,
-	activity_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    activityId VARCHAR(50) NOT NULL
+    activityId VARCHAR(50) NOT NULL,
+	activity_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO characters (characterId, image, warmthCoeff)
+VALUES ('avatar1', 'avatar1.png', 1.0),
+('avatar2', 'avatar1.png', 0.8),
+('avatar2', 'avatar1.png', 1.2)
 
 -- INSERT INTO players (username, level)
 -- VALUES ('ghost', 5),

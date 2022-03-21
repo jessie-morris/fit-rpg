@@ -26,15 +26,10 @@ app.post('/rpg', (req, res) => {
         db.userExists(req.body.user_name).then(userExists => {
             if(userExists.rows[0].count == '0') {
                 res.type("application/json")
-                const response = responseHelper.signupResponse
-                res.send(response)
+                res.send(responseHelper.signupResponse)
             }
             else {
-                message = {
-                    "response_type": "in_channel",
-                    "text": "You already have a character"
-                }
-                res.send(message)
+                res.send(responseHelper.simpleChannelMessage("You already have a character"))
             }
         });
     }
@@ -53,12 +48,8 @@ app.post('/menu', (req, res) => {
     // console.log(payload)
     username = payload.user.username;
     const selected_char = payload.actions[0].value
-    db.signup(username).then(userCreated => {
-        message = {
-            "response_type": "in_channel",
-            "text": `${selected_char} sucks`
-        }
-        axios.post(payload.response_url, message)
+    db.signup(username, selected_char).then(userCreated => {
+        axios.post(payload.response_url, responseHelper.simpleChannelMessage(`${selected_char} sucks`))
             .then(res => {
                 console.log(`statusCode: ${res.status}`)
                 // console.log(res)
@@ -69,3 +60,7 @@ app.post('/menu', (req, res) => {
     })
     res.sendStatus(200)
 })
+
+module.exports = {
+    app
+}
